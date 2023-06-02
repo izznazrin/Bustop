@@ -8,8 +8,6 @@ class JourneyModule extends StatelessWidget {
       body: Column(
         children: [
           Text('journey page'),
-          // i change this line
-          //saya ubah ni
         ],
       ),
     );
