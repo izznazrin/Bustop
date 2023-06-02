@@ -42,7 +42,7 @@ class _MapState extends State<MapModule> {
     if (id == markerId) {
       markerIcon = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(),
-        'assets/images/bus.png',
+        'assets/images/busicon.png',
       );
     } else {
       markerIcon = await BitmapDescriptor.fromAssetImage(
