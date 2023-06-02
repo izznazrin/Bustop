@@ -6,44 +6,45 @@ class JourneyModule extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
-      body: Column(
-        children: [
-          Material(
-            elevation: 4,
-            child: Container(
-              height: 50,
-              color: Colors.white,
-              child: Row(
-                children: [
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    width: 120,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(
-                        color: Colors.grey,
-                        width: 2,
+      body: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: Column(
+          children: [
+            Material(
+              elevation: 4,
+              child: Container(
+                height: 50,
+                color: Colors.white,
+                child: Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.all(10),
+                      width: 120,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'No Status',
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey),
+                      child: Center(
+                        child: Text(
+                          'No Status',
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey),
+                        ),
                       ),
                     ),
-                  ),
-                  // Add other widgets here
-                ],
+                    // Add other widgets here
+                  ],
+                ),
               ),
             ),
-          ),
-          SingleChildScrollView(
-            child: Column(
+            Column(
               children: [
                 Row(
                   children: [
@@ -190,8 +191,8 @@ class JourneyModule extends StatelessWidget {
                 ),
               ],
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }
