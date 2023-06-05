@@ -3,6 +3,7 @@ import 'package:bustop/busstoplist.dart';
 import 'dart:math';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:bustop/riding.dart';
 
 class BusStop {
   final String name;
@@ -58,6 +59,12 @@ class JourneyModule extends StatefulWidget {
 class JourneyModuleState extends State<JourneyModule> {
   String nearestBusStop = '';
   int selectedBusStopIndex = 0;
+
+  Future<void> _refresh() async {
+    // Perform any refresh actions here
+    determineNearestBusStop(); // Refresh the nearest bus stop
+    // You can add more code to refresh additional data if needed
+  }
 
   @override
   void initState() {
@@ -153,186 +160,148 @@ class JourneyModuleState extends State<JourneyModule> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
-      body: SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
-        child: Column(
-          children: [
-            Material(
-              elevation: 4,
-              child: Container(
-                height: 50,
-                color: Colors.white,
-                child: Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.all(10),
-                      width: 120,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
-                          color: Colors.grey,
-                          width: 2,
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              Material(
+                elevation: 4,
+                child: Container(
+                  height: 50,
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.all(10),
+                        width: 120,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Colors.grey,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'No Status',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey),
+                        child: Center(
+                          child: Text(
+                            'No Status',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey),
+                          ),
                         ),
                       ),
-                    ),
-                    // Add other widgets here
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Column(
-              children: [
-                Row(
-                  children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Container(
-                        margin: EdgeInsets.fromLTRB(20, 20, 10, 20),
-                        child: Image(
-                          image: AssetImage('assets/images/busstop.png'),
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(20, 20, 10, 20),
+                          child: Image(
+                            image: AssetImage('assets/images/busstop.png'),
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(0, 20, 20, 20),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'You\'re not at bus stop',
-                              style: TextStyle(
-                                  fontSize: 25, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              'Go to the nearest bus stop.',
-                              style: TextStyle(fontSize: 17),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(7),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: SizedBox(
-                          width: 150,
-                          height: 150,
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0, 20, 20, 20),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Flexible(
-                                child: Text(
-                                  nearestBusStop,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                              Text(
+                                'You\'re not at bus stop',
+                                style: TextStyle(
+                                    fontSize: 25, fontWeight: FontWeight.bold),
                               ),
-                              SizedBox(height: 20),
-                              Container(
-                                width: 100,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: Colors.blue,
-                                    width: 2,
-                                  ),
-                                ),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    if (selectedBusStopIndex >= 0 &&
-                                        selectedBusStopIndex <
-                                            busStops.length) {
-                                      final busStop =
-                                          busStops[selectedBusStopIndex];
-                                      launchGoogleMapsNavigation(
-                                          busStop.latitude, busStop.longitude);
-                                    }
-                                  },
-                                  child: Text(
-                                    'Navigate',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                ),
+                              Text(
+                                'Go to the nearest bus stop.',
+                                style: TextStyle(fontSize: 17),
                               ),
                             ],
                           ),
                         ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(7),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    BusStopList(), // Navigate to BusStopList module
-                              ),
-                            );
-                          },
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(7),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                           child: SizedBox(
                             width: 150,
                             height: 150,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Transform.rotate(
-                                  angle: 45 * 3.1415926535 / 180,
-                                  child: Icon(
-                                    Icons.navigation,
-                                    size: 24,
-                                    color: Colors.blue,
+                                Text('Nearest:'),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    nearestBusStop,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
-                                SizedBox(height: 10),
-                                Text(
-                                  'View All',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.bold,
+                                SizedBox(height: 20),
+                                Container(
+                                  width: 100,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: Colors.blue,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      if (selectedBusStopIndex >= 0 &&
+                                          selectedBusStopIndex <
+                                              busStops.length) {
+                                        final busStop =
+                                            busStops[selectedBusStopIndex];
+                                        launchGoogleMapsNavigation(
+                                            busStop.latitude,
+                                            busStop.longitude);
+                                      }
+                                    },
+                                    child: Text(
+                                      'Navigate',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -340,12 +309,94 @@ class JourneyModuleState extends State<JourneyModule> {
                           ),
                         ),
                       ),
+                      Padding(
+                        padding: EdgeInsets.all(7),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => BusStopList(),
+                                  ),
+                                );
+                              },
+                              child: SizedBox(
+                                width: 150,
+                                height: 150,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Transform.rotate(
+                                      angle: 45 * 3.1415926535 / 180,
+                                      child: Icon(
+                                        Icons.navigation,
+                                        size: 24,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      'View All Bus Stops',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Riding(
+                            nearestBusStop: nearestBusStop,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text('I\'m at ' + nearestBusStop + ' bus stop'),
+                    style: ElevatedButton.styleFrom(
+                      // Customize the button's appearance here
+                      primary: Colors.blue, // Set the button's background color
+                      onPrimary: Colors.white, // Set the button's text color
+                      textStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold), // Set the text style
+                      padding: EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 24), // Set the padding
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(10), // Set the border radius
+                      ),
+                      elevation: 4, // Set the button's elevation (shadow)
                     ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                  ),
+                  SizedBox(
+                    height: 200,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

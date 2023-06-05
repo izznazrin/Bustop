@@ -24,11 +24,11 @@ class _TemplateState extends State<Template> {
   Text _getTitle() {
     switch (_selectedIndex) {
       case 0:
-        return Text('J o u r n e y');
+        return Text('Journey');
       case 1:
-        return Text('M a p');
+        return Text('Map');
       default:
-        return Text('B u s t o p');
+        return Text('Bustop');
     }
   }
 
