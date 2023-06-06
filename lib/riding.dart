@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Riding extends StatefulWidget {
   final String nearestBusStop;
@@ -14,15 +14,137 @@ class Riding extends StatefulWidget {
 }
 
 class _RidingState extends State<Riding> {
+  bool showMap = false;
+  bool isButtonPressed = false;
+
   Future<void> _refresh() async {
     // Perform any refresh actions here
     // You can add more code to refresh additional data if needed
   }
-  String? selectedOption = 'Option 1';
-  List<String> options = ['Option 1', 'Option 2', 'Option 3'];
+  String? selectedOption = 'Choose Destination';
+  List<String> options = [
+    'Choose Destination',
+    'Kolej Kediaman Pewira',
+    'Kolej Kediaman Tun Dr. Ismail'
+  ];
+
+  Widget buildMapContainer() {
+    return Container(
+      height: 460,
+      margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Upcoming Bus',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 25,
+              ),
+            ),
+          ),
+          Container(
+            height: 375,
+            margin: EdgeInsets.only(top: 20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.4),
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.all(20),
+                  child: Container(
+                    height: 200,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey,
+                        width: 2,
+                      ),
+                    ),
+                    child: GoogleMap(
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(1.856202, 103.083296),
+                        zoom: 16,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 20),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Estimated arrival time:',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Number of passengers:',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Bus plate number:',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () {
+                            // Add your desired functionality here
+                          },
+                          child: Text(
+                            'Check-in',
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    bool isDestinationChosen = selectedOption != 'Choose Destination';
+
     return Scaffold(
       appBar: AppBar(
         title: Padding(
@@ -95,39 +217,105 @@ class _RidingState extends State<Riding> {
                 children: [
                   Expanded(
                     child: Container(
-                      height: 65,
                       margin: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
+                      child: Material(
+                        elevation: 4,
                         borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.location_pin,
-                            size: 20,
-                            color: Colors.blue,
+                        child: Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.location_pin,
+                                size: 40,
+                                color: Colors.blue,
+                              ),
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: IgnorePointer(
+                                  ignoring: isButtonPressed,
+                                  child: Opacity(
+                                    opacity: isButtonPressed ? 0.5 : 1.0,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: Colors.grey,
+                                          width: 2,
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: DropdownButton<String>(
+                                        value: selectedOption,
+                                        onChanged: isButtonPressed
+                                            ? null // Disable the dropdown button if button is pressed
+                                            : (String? newValue) {
+                                                setState(() {
+                                                  selectedOption = newValue;
+                                                  isDestinationChosen =
+                                                      selectedOption !=
+                                                          'Choose Destination';
+                                                });
+                                              },
+                                        underline:
+                                            Container(), // Remove the default underline
+                                        items: options
+                                            .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  value,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ).toList(),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
-              DropdownButton<String>(
-                value: selectedOption,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedOption = newValue;
-                  });
-                },
-                items: options.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
+              if (!showMap && isDestinationChosen)
+                Container(
+                  margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        showMap = true;
+                        isButtonPressed = true; // Set isButtonPressed to true
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      textStyle:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      minimumSize: Size(
+                        double.infinity,
+                        60,
+                      ),
+                    ),
+                    child: Text(
+                      'View Upcoming Bus',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              if (showMap) buildMapContainer(),
             ],
           ),
         ),

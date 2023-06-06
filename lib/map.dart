@@ -429,7 +429,6 @@ class _MapState extends State<MapModule> {
             Position position = snapshot.data as Position;
             LatLng currentLocation =
                 LatLng(position.latitude, position.longitude);
-
             return GoogleMap(
               initialCameraPosition: CameraPosition(
                 target: currentLocation,
