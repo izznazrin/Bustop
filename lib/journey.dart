@@ -46,7 +46,7 @@ List<BusStop> busStops = [
   BusStop(
       name: 'FKEE (New Building)', latitude: 1.860598, longitude: 103.086141),
   BusStop(name: 'FKMP', latitude: 1.861335, longitude: 103.087968),
-  BusStop(name: 'FKEE', latitude: 1.860276, longitude: 103.089091),
+  BusStop(name: 'FKEE 2', latitude: 1.860276, longitude: 103.089091),
   BusStop(name: 'Arked', latitude: 1.857055, longitude: 103.087494),
   BusStop(name: 'ATM', latitude: 1.854348, longitude: 103.086318),
 ];

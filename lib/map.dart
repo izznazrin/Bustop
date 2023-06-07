@@ -388,7 +388,7 @@ class _MapState extends State<MapModule> {
     addMarker('busstop13', bustop13, 'HENTIAN 13: FKAAB 2');
     addMarker('busstop14', bustop14, 'HENTIAN 14: FKEE (New Building)');
     addMarker('busstop15', bustop15, 'HENTIAN 15: FKMP');
-    addMarker('busstop16', bustop16, 'HENTIAN 16: FKEE');
+    addMarker('busstop16', bustop16, 'HENTIAN 16: FKEE 2');
     addMarker('busstop17', bustop17, 'HENTIAN 17: Arked');
     addMarker('busstop18', bustop18, 'HENTIAN 18: ATM');
 
