@@ -25,7 +25,23 @@ class _RidingState extends State<Riding> {
   List<String> options = [
     'Choose Destination',
     'Kolej Kediaman Pewira',
-    'Kolej Kediaman Tun Dr. Ismail'
+    'PKU & CARE',
+    'G3 (Back)',
+    'FKEE',
+    'Kolej Kediaman Tun Fatimah',
+    'Kolej Kediaman Tun Dr. Ismail',
+    'G3 (Front)',
+    'Library',
+    'Dewan Sultan Ibrahim',
+    'FPTP',
+    'FPTV',
+    'FKAAB',
+    'FKAAB 2',
+    'FKEE (New Building)',
+    'FKMP',
+    'FKEE',
+    'Arked',
+    'ATM',
   ];
 
   Widget buildMapContainer() {
