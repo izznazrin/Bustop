@@ -42,6 +42,27 @@ class _RidingState extends State<Riding> {
     'ATM',
   ];
 
+  final Map<String, LatLng> busStopLocations = {
+    'Kolej Kediaman Pewira': LatLng(1.861775, 103.099222),
+    'PKU & CARE': LatLng(1.8561335089285704, 103.08425674117098),
+    'G3 (Back)': LatLng(1.8578237774971171, 103.08711181778779),
+    'FKEE': LatLng(1.859955, 103.089037),
+    'Kolej Kediaman Tun Fatimah': LatLng(1.863189, 103.088996),
+    'Kolej Kediaman Tun Dr. Ismail': LatLng(1.862917, 103.089213),
+    'G3 (Front)': LatLng(1.859658, 103.086544),
+    'Library': LatLng(1.858096, 103.083229),
+    'Dewan Sultan Ibrahim': LatLng(1.858260, 103.081370),
+    'FPTP': LatLng(1.861238, 103.081408),
+    'FPTV': LatLng(1.862954, 103.081570),
+    'FKAAB': LatLng(1.864361, 103.083192),
+    'FKAAB 2': LatLng(1.864114, 103.085262),
+    'FKEE (New Building)': LatLng(1.860598, 103.086141),
+    'FKMP': LatLng(1.861335, 103.087968),
+    'FKEE 2': LatLng(1.860276, 103.089091),
+    'Arked': LatLng(1.857055, 103.087494),
+    'ATM': LatLng(1.854348, 103.086318),
+  };
+
   final markerId = 'busMarker';
   LatLng initialBus = LatLng(1.856202, 103.083296);
   LatLng bustop1 = LatLng(1.861775, 103.099222);
@@ -103,83 +124,12 @@ class _RidingState extends State<Riding> {
   @override
   void initState() {
     super.initState();
-    if (widget.nearestBusStop == 'Kolej Kediaman Pewira') {
-      addMarker('busstop1', bustop1, 'HENTIAN 1: Kolej Kediaman Pewira');
-    } else if (widget.nearestBusStop == 'PKU & CARE') {
-      addMarker('busstop2', bustop2, 'HENTIAN 2: PKU & CARE');
-    } else if (widget.nearestBusStop == 'G3 (Back)') {
-      addMarker('busstop3', bustop3, 'HENTIAN 3: G3 (Back)');
-    } else if (widget.nearestBusStop == 'FKEE') {
-      addMarker('busstop4', bustop4, 'HENTIAN 4: FKEE');
-    } else if (widget.nearestBusStop == 'Kolej Kediaman Tun Fatimah') {
-      addMarker('busstop5', bustop5, 'HENTIAN 5: Kolej Kediaman Tun Fatimah');
-    } else if (widget.nearestBusStop == 'Kolej Kediaman Tun Dr. Ismail') {
-      addMarker(
-          'busstop6', bustop6, 'HENTIAN 6: Kolej Kediaman Tun Dr. Ismail');
-    } else if (widget.nearestBusStop == 'G3 (Front)') {
-      addMarker('busstop7', bustop7, 'HENTIAN 7: G3 (Front)');
-    } else if (widget.nearestBusStop == 'Library') {
-      addMarker('busstop8', bustop8, 'HENTIAN 8: Library');
-    } else if (widget.nearestBusStop == 'Dewan Sultan Ibrahim') {
-      addMarker('busstop9', bustop9, 'HENTIAN 9: Dewan Sultan Ibrahim');
-    } else if (widget.nearestBusStop == 'FPTP') {
-      addMarker('busstop10', bustop10, 'HENTIAN 10: FPTP');
-    } else if (widget.nearestBusStop == 'FPTV') {
-      addMarker('busstop11', bustop11, 'HENTIAN 11: FPTV');
-    } else if (widget.nearestBusStop == 'FKAAB') {
-      addMarker('busstop12', bustop12, 'HENTIAN 12: FKAAB');
-    } else if (widget.nearestBusStop == 'FKAAB 2') {
-      addMarker('busstop13', bustop13, 'HENTIAN 13: FKAAB 2');
-    } else if (widget.nearestBusStop == 'FKEE (New Building)') {
-      addMarker('busstop14', bustop14, 'HENTIAN 14: FKEE (New Building)');
-    } else if (widget.nearestBusStop == 'FKMP') {
-      addMarker('busstop15', bustop15, 'HENTIAN 15: FKMP');
-    } else if (widget.nearestBusStop == 'FKEE 2') {
-      addMarker('busstop16', bustop16, 'HENTIAN 16: FKEE 2');
-    } else if (widget.nearestBusStop == 'Arked') {
-      addMarker('busstop17', bustop17, 'HENTIAN 17: Arked');
-    } else if (widget.nearestBusStop == 'ATM') {
-      addMarker('busstop18', bustop18, 'HENTIAN 18: ATM');
+
+    if (busStopLocations.containsKey(widget.nearestBusStop)) {
+      final LatLng location = busStopLocations[widget.nearestBusStop]!;
+      addMarker('busstop1', location, 'HENTIAN 1: ${widget.nearestBusStop}');
     }
 
-    if (selectedOption == 'Kolej Kediaman Pewira') {
-      addMarker('busstop1', bustop1, 'HENTIAN 1: Kolej Kediaman Pewira');
-    } else if (selectedOption == 'PKU & CARE') {
-      addMarker('busstop2', bustop2, 'HENTIAN 2: PKU & CARE');
-    } else if (selectedOption == 'G3 (Back)') {
-      addMarker('busstop3', bustop3, 'HENTIAN 3: G3 (Back)');
-    } else if (selectedOption == 'FKEE') {
-      addMarker('busstop4', bustop4, 'HENTIAN 4: FKEE');
-    } else if (selectedOption == 'Kolej Kediaman Tun Fatimah') {
-      addMarker('busstop5', bustop5, 'HENTIAN 5: Kolej Kediaman Tun Fatimah');
-    } else if (selectedOption == 'Kolej Kediaman Tun Dr. Ismail') {
-      addMarker(
-          'busstop6', bustop6, 'HENTIAN 6: Kolej Kediaman Tun Dr. Ismail');
-    } else if (selectedOption == 'G3 (Front)') {
-      addMarker('busstop7', bustop7, 'HENTIAN 7: G3 (Front)');
-    } else if (selectedOption == 'Library') {
-      addMarker('busstop8', bustop8, 'HENTIAN 8: Library');
-    } else if (selectedOption == 'Dewan Sultan Ibrahim') {
-      addMarker('busstop9', bustop9, 'HENTIAN 9: Dewan Sultan Ibrahim');
-    } else if (selectedOption == 'FPTP') {
-      addMarker('busstop10', bustop10, 'HENTIAN 10: FPTP');
-    } else if (selectedOption == 'FPTV') {
-      addMarker('busstop11', bustop11, 'HENTIAN 11: FPTV');
-    } else if (selectedOption == 'FKAAB') {
-      addMarker('busstop12', bustop12, 'HENTIAN 12: FKAAB');
-    } else if (selectedOption == 'FKAAB 2') {
-      addMarker('busstop13', bustop13, 'HENTIAN 13: FKAAB 2');
-    } else if (selectedOption == 'FKEE (New Building)') {
-      addMarker('busstop14', bustop14, 'HENTIAN 14: FKEE (New Building)');
-    } else if (selectedOption == 'FKMP') {
-      addMarker('busstop15', bustop15, 'HENTIAN 15: FKMP');
-    } else if (selectedOption == 'FKEE 2') {
-      addMarker('busstop16', bustop16, 'HENTIAN 16: FKEE 2');
-    } else if (selectedOption == 'Arked') {
-      addMarker('busstop17', bustop17, 'HENTIAN 17: Arked');
-    } else if (selectedOption == 'ATM') {
-      addMarker('busstop18', bustop18, 'HENTIAN 18: ATM');
-    }
     // Add the bus marker
     addMarker(markerId, initialBus, 'NDH 2996');
 
@@ -188,22 +138,24 @@ class _RidingState extends State<Riding> {
         .collection('driver_locations')
         .doc('driver1')
         .snapshots()
-        .listen((snapshot) {
-      if (snapshot.exists) {
-        GeoPoint geoPoint = snapshot.get('location');
-        Position position = Position(
-          latitude: geoPoint.latitude,
-          longitude: geoPoint.longitude,
-          timestamp: DateTime.now(),
-          accuracy: 0.0,
-          altitude: 0.0,
-          heading: 0.0,
-          speed: 0.0,
-          speedAccuracy: 0.0,
-        );
-        updateMarkerPosition(position);
-      }
-    });
+        .listen(
+      (snapshot) {
+        if (snapshot.exists) {
+          GeoPoint geoPoint = snapshot.get('location');
+          Position position = Position(
+            latitude: geoPoint.latitude,
+            longitude: geoPoint.longitude,
+            timestamp: DateTime.now(),
+            accuracy: 0.0,
+            altitude: 0.0,
+            heading: 0.0,
+            speed: 0.0,
+            speedAccuracy: 0.0,
+          );
+          updateMarkerPosition(position);
+        }
+      },
+    );
   }
 
   Widget buildMapContainer() {
@@ -251,7 +203,7 @@ class _RidingState extends State<Riding> {
                     child: GoogleMap(
                       initialCameraPosition: CameraPosition(
                         target: LatLng(1.856202, 103.083296),
-                        zoom: 16,
+                        zoom: 14,
                       ),
                       markers: Set<Marker>.of(_markers.values),
                     ),
@@ -424,12 +376,14 @@ class _RidingState extends State<Riding> {
                                     onChanged: isButtonPressed
                                         ? null // Disable the dropdown button if button is pressed
                                         : (String? newValue) {
-                                            setState(() {
-                                              selectedOption = newValue;
-                                              isDestinationChosen =
-                                                  selectedOption !=
-                                                      'Choose Destination';
-                                            });
+                                            setState(
+                                              () {
+                                                selectedOption = newValue;
+                                                isDestinationChosen =
+                                                    selectedOption !=
+                                                        'Choose Destination';
+                                              },
+                                            );
                                           },
                                     underline:
                                         Container(), // Remove the default underline
@@ -470,7 +424,50 @@ class _RidingState extends State<Riding> {
                 onPressed: () {
                   setState(() {
                     showMap = true;
-                    isButtonPressed = true; // Set isButtonPressed to true
+                    isButtonPressed = true;
+                    if (selectedOption == 'Kolej Kediaman Pewira') {
+                      addMarker('busstop1', bustop1,
+                          'HENTIAN 1: Kolej Kediaman Pewira');
+                    } else if (selectedOption == 'PKU & CARE') {
+                      addMarker('busstop2', bustop2, 'HENTIAN 2: PKU & CARE');
+                    } else if (selectedOption == 'G3 (Back)') {
+                      addMarker('busstop3', bustop3, 'HENTIAN 3: G3 (Back)');
+                    } else if (selectedOption == 'FKEE') {
+                      addMarker('busstop4', bustop4, 'HENTIAN 4: FKEE');
+                    } else if (selectedOption == 'Kolej Kediaman Tun Fatimah') {
+                      addMarker('busstop5', bustop5,
+                          'HENTIAN 5: Kolej Kediaman Tun Fatimah');
+                    } else if (selectedOption ==
+                        'Kolej Kediaman Tun Dr. Ismail') {
+                      addMarker('busstop6', bustop6,
+                          'HENTIAN 6: Kolej Kediaman Tun Dr. Ismail');
+                    } else if (selectedOption == 'G3 (Front)') {
+                      addMarker('busstop7', bustop7, 'HENTIAN 7: G3 (Front)');
+                    } else if (selectedOption == 'Library') {
+                      addMarker('busstop8', bustop8, 'HENTIAN 8: Library');
+                    } else if (selectedOption == 'Dewan Sultan Ibrahim') {
+                      addMarker('busstop9', bustop9,
+                          'HENTIAN 9: Dewan Sultan Ibrahim');
+                    } else if (selectedOption == 'FPTP') {
+                      addMarker('busstop10', bustop10, 'HENTIAN 10: FPTP');
+                    } else if (selectedOption == 'FPTV') {
+                      addMarker('busstop11', bustop11, 'HENTIAN 11: FPTV');
+                    } else if (selectedOption == 'FKAAB') {
+                      addMarker('busstop12', bustop12, 'HENTIAN 12: FKAAB');
+                    } else if (selectedOption == 'FKAAB 2') {
+                      addMarker('busstop13', bustop13, 'HENTIAN 13: FKAAB 2');
+                    } else if (selectedOption == 'FKEE (New Building)') {
+                      addMarker('busstop14', bustop14,
+                          'HENTIAN 14: FKEE (New Building)');
+                    } else if (selectedOption == 'FKMP') {
+                      addMarker('busstop15', bustop15, 'HENTIAN 15: FKMP');
+                    } else if (selectedOption == 'FKEE 2') {
+                      addMarker('busstop16', bustop16, 'HENTIAN 16: FKEE 2');
+                    } else if (selectedOption == 'Arked') {
+                      addMarker('busstop17', bustop17, 'HENTIAN 17: Arked');
+                    } else if (selectedOption == 'ATM') {
+                      addMarker('busstop18', bustop18, 'HENTIAN 18: ATM');
+                    }
                   });
                 },
                 style: ElevatedButton.styleFrom(
