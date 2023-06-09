@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
+import 'dart:math';
+
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Riding extends StatefulWidget {
   final String nearestBusStop;
@@ -113,12 +117,119 @@ class _RidingState extends State<Riding> {
     setState(() {});
   }
 
-  void updateMarkerPosition(Position position) {
+  Map<PolylineId, Polyline> _polylines = {};
+
+  void updateMarkerPosition(Position position) async {
     LatLng newPosition = LatLng(position.latitude, position.longitude);
     Marker updatedMarker = _markers[markerId]!;
     updatedMarker = updatedMarker.copyWith(positionParam: newPosition);
     _markers[markerId] = updatedMarker;
+
+    if (busStopLocations.containsKey(widget.nearestBusStop)) {
+      final LatLng busStopLocation = busStopLocations[widget.nearestBusStop]!;
+      double distance = distanceBetween(newPosition, busStopLocation);
+      if (distance <= 10000) {
+        // If the bus is within 100 meters of the bus stop, request directions
+        String apiKey = 'AIzaSyCWC0D4MexVfU7wBRq_jwzu0HCUaT-3_m8';
+        String apiUrl = 'https://maps.googleapis.com/maps/api/directions/json?'
+            'origin=${newPosition.latitude},${newPosition.longitude}'
+            '&destination=${busStopLocation.latitude},${busStopLocation.longitude}'
+            '&key=$apiKey';
+
+        // Make an HTTP GET request to the Directions API
+        http.Response response = await http.get(Uri.parse(apiUrl));
+
+        if (response.statusCode == 200) {
+          // Parse the JSON response
+          Map<String, dynamic> data = jsonDecode(response.body);
+          List<dynamic> routes = data['routes'];
+          if (routes.isNotEmpty) {
+            // Extract the polyline points from the response
+            String encodedPoints = routes[0]['overview_polyline']['points'];
+
+            // Decode the polyline points
+            List<LatLng> polylinePoints = decodePolyline(encodedPoints);
+
+            // Create a unique polyline ID
+            PolylineId polylineId = PolylineId('busPolyline');
+
+            // Create a Polyline object
+            Polyline polyline = Polyline(
+              polylineId: polylineId,
+              color: Colors.blue,
+              width: 3,
+              points: polylinePoints,
+            );
+
+            // Add the polyline to the map
+            _polylines[polylineId] = polyline;
+          }
+        }
+      }
+    }
+
     setState(() {});
+  }
+
+// Function to decode the polyline points
+  List<LatLng> decodePolyline(String encoded) {
+    List<LatLng> polylinePoints = [];
+
+    int index = 0;
+    int len = encoded.length;
+    int lat = 0, lng = 0;
+
+    while (index < len) {
+      int b, shift = 0, result = 0;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1F) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+      lat += dlat;
+
+      shift = 0;
+      result = 0;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1F) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+      lng += dlng;
+
+      double latLngOffset =
+          1e-5; // Offset to convert integer coordinates to LatLng values
+      double latValue = lat * latLngOffset;
+      double lngValue = lng * latLngOffset;
+      LatLng point = LatLng(latValue, lngValue);
+      polylinePoints.add(point);
+    }
+
+    return polylinePoints;
+  }
+
+  double distanceBetween(LatLng start, LatLng end) {
+    const int earthRadius = 6371000; // in meters
+    double lat1 = start.latitude;
+    double lon1 = start.longitude;
+    double lat2 = end.latitude;
+    double lon2 = end.longitude;
+    double dLat = _toRadians(lat2 - lat1);
+    double dLon = _toRadians(lon2 - lon1);
+    double a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_toRadians(lat1)) *
+            cos(_toRadians(lat2)) *
+            sin(dLon / 2) *
+            sin(dLon / 2);
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    double distance = earthRadius * c;
+    return distance;
+  }
+
+  double _toRadians(double degrees) {
+    return degrees * (pi / 180);
   }
 
   @override
@@ -206,6 +317,7 @@ class _RidingState extends State<Riding> {
                         zoom: 14,
                       ),
                       markers: Set<Marker>.of(_markers.values),
+                      polylines: Set<Polyline>.of(_polylines.values),
                     ),
                   ),
                 ),
