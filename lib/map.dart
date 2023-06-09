@@ -397,12 +397,12 @@ class _MapState extends State<MapModule> {
 
     // Listen to changes in driver location from Firebase
     FirebaseFirestore.instance
-        .collection('driver_locations')
+        .collection('Driver')
         .doc('driver1')
         .snapshots()
         .listen((snapshot) {
       if (snapshot.exists) {
-        GeoPoint geoPoint = snapshot.get('location');
+        GeoPoint geoPoint = snapshot.get('driver_location');
         Position position = Position(
           latitude: geoPoint.latitude,
           longitude: geoPoint.longitude,
