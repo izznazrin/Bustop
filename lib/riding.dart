@@ -3,7 +3,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:math';
-
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -17,6 +16,13 @@ class Riding extends StatefulWidget {
 
   @override
   State<Riding> createState() => _RidingState();
+}
+
+class PolylineData {
+  final Polyline polyline;
+  final double distance;
+
+  PolylineData(this.polyline, this.distance);
 }
 
 class _RidingState extends State<Riding> {
@@ -100,7 +106,8 @@ class _RidingState extends State<Riding> {
     setState(() {});
   }
 
-  Map<PolylineId, Polyline> _polylines = {};
+  Map<PolylineId, PolylineData> _polylines = {};
+  double remainingTime = 0.0;
 
   void updateMarkerPosition(Position position) async {
     LatLng newPosition = LatLng(position.latitude, position.longitude);
@@ -144,8 +151,26 @@ class _RidingState extends State<Riding> {
               points: polylinePoints,
             );
 
+            // Create a PolylineData object with the polyline and distance
+            PolylineData polylineData = PolylineData(
+              polyline,
+              calculatePolylineDistance(polylinePoints),
+            );
+
+// Add the polyline data to the map
+            _polylines[polylineId] = polylineData;
+
             // Add the polyline to the map
-            _polylines[polylineId] = polyline;
+            //_polylines[polylineId] = polyline;
+
+            // Calculate remaining time based on distance
+            double remainingDistance = polylineData.distance;
+            double remainingTime = calculateRemainingTime(remainingDistance);
+
+            setState(() {
+              // Assign the calculated remaining time to the variable
+              this.remainingTime = remainingTime;
+            });
           }
         }
       }
@@ -215,6 +240,25 @@ class _RidingState extends State<Riding> {
     return degrees * (pi / 180);
   }
 
+  double calculatePolylineDistance(List<LatLng> polylinePoints) {
+    double totalDistance = 0.0;
+    LatLng previousPoint = polylinePoints[0];
+
+    for (int i = 1; i < polylinePoints.length; i++) {
+      LatLng currentPoint = polylinePoints[i];
+      double segmentDistance = distanceBetween(previousPoint, currentPoint);
+      totalDistance += segmentDistance;
+      previousPoint = currentPoint;
+    }
+
+    return totalDistance;
+  }
+
+  double calculateRemainingTime(double distance) {
+    double busSpeed = 10.0; // Assuming constant speed of 10 m/s
+    return distance / busSpeed;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -232,7 +276,7 @@ class _RidingState extends State<Riding> {
         .collection('Driver')
         .doc('driver1')
         .snapshots()
-        .listen( 
+        .listen(
       (snapshot) {
         if (snapshot.exists) {
           GeoPoint geoPoint = snapshot.get('driver_location');
@@ -300,7 +344,9 @@ class _RidingState extends State<Riding> {
                         zoom: 14,
                       ),
                       markers: Set<Marker>.of(_markers.values),
-                      polylines: Set<Polyline>.of(_polylines.values),
+                      polylines: _polylines.values
+                          .map((polylineData) => polylineData.polyline)
+                          .toSet(),
                     ),
                   ),
                 ),
@@ -311,7 +357,7 @@ class _RidingState extends State<Riding> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'Estimated arrival time:',
+                          'Estimated arrival time: ${remainingTime.toStringAsFixed(0)} seconds',
                           style: TextStyle(fontSize: 18),
                         ),
                       ),
