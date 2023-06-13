@@ -1,3 +1,4 @@
+import 'package:bustop/InBus.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -75,7 +76,6 @@ class _RidingState extends State<Riding> {
 
   final markerId = 'busMarker';
   LatLng initialBus = LatLng(1.856202, 103.083296);
-
   Map<String, Marker> _markers = {};
 
   Future<void> addMarker(String id, LatLng location, String busstopname) async {
@@ -157,7 +157,7 @@ class _RidingState extends State<Riding> {
               calculatePolylineDistance(polylinePoints),
             );
 
-// Add the polyline data to the map
+            // Add the polyline data to the map
             _polylines[polylineId] = polylineData;
 
             // Add the polyline to the map
@@ -391,7 +391,13 @@ class _RidingState extends State<Riding> {
                             ),
                           ),
                           onPressed: () {
-                            // Add your desired functionality here
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    InBus(selectedOption: selectedOption!),
+                              ),
+                            );
                           },
                           child: Text(
                             'Check-in',

@@ -376,8 +376,10 @@ class JourneyModuleState extends State<JourneyModule> {
                     child: Text('I\'m at ' + nearestBusStop + ' bus stop'),
                     style: ElevatedButton.styleFrom(
                       // Customize the button's appearance here
-                      primary: Colors.blue, // Set the button's background color
-                      onPrimary: Colors.white, // Set the button's text color
+                      backgroundColor:
+                          Colors.blue, // Set the button's background color
+                      foregroundColor:
+                          Colors.white, // Set the button's text color
                       textStyle: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold), // Set the text style
