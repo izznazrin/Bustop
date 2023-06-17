@@ -370,6 +370,22 @@ class _MapState extends State<MapModule> {
     setState(() {});
   }
 
+  //tukar bus plate number
+  String busPlateNumber = ''; // Variable to hold the bus plate number
+  Future<String> getBusPlateNumber() async {
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('Driver')
+        .doc('driver1')
+        .get();
+
+    if (snapshot.exists) {
+      String plateNumber = snapshot['bus_id'] ?? '';
+      return plateNumber;
+    } else {
+      return '';
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -393,7 +409,12 @@ class _MapState extends State<MapModule> {
     addMarker('busstop18', bustop18, 'HENTIAN 18: ATM');
 
     // Add the bus marker
-    addMarker(markerId, initialBus, 'NDH 2996');
+    getBusPlateNumber().then((plateNumber) {
+      setState(() {
+        busPlateNumber = plateNumber;
+      });
+      addMarker(markerId, initialBus, busPlateNumber);
+    });
 
     // Listen to changes in driver location from Firebase
     FirebaseFirestore.instance

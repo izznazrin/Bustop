@@ -15,7 +15,9 @@ class _ProfileState extends State<Profile> {
         title: Text('Profile'),
       ),
       backgroundColor: Colors.grey[300],
-      body: SafeArea(child: Text('profile page')),
+      body: SafeArea(
+        child: Text('profile page'),
+      ),
     );
   }
 }

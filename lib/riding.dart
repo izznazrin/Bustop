@@ -269,7 +269,7 @@ class _RidingState extends State<Riding> {
     }
 
     // Add the bus marker
-    addMarker(markerId, initialBus, 'NDH 2996');
+    addMarker(markerId, initialBus, '');
 
     // Listen to changes in driver location from Firebase
     FirebaseFirestore.instance
@@ -294,6 +294,22 @@ class _RidingState extends State<Riding> {
         }
       },
     );
+  }
+
+  String busPlateNumber = ''; // Variable to hold the bus plate number
+  Future<String> getBusPlateNumber() async {
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('Driver')
+        .doc('driver1')
+        .get();
+
+    if (snapshot.exists) {
+      String busPlateNumber = snapshot['bus_id'] ??
+          ''; // Retrieve the bus plate number field from Firestore
+      return busPlateNumber;
+    } else {
+      return '';
+    }
   }
 
   Widget buildMapContainer() {
@@ -370,9 +386,24 @@ class _RidingState extends State<Riding> {
                       ),
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Bus plate number:',
-                          style: TextStyle(fontSize: 18),
+                        child: FutureBuilder<String>(
+                          future: getBusPlateNumber(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              final busPlateNumber = snapshot.data;
+                              return Text(
+                                'Bus plate number: $busPlateNumber',
+                                style: TextStyle(fontSize: 18),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Text(
+                                'Error retrieving bus plate number',
+                                style: TextStyle(fontSize: 18),
+                              );
+                            } else {
+                              return CircularProgressIndicator(); // Display a loading indicator while waiting for data
+                            }
+                          },
                         ),
                       ),
                     ],
