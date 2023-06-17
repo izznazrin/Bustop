@@ -431,167 +431,170 @@ class _RidingState extends State<Riding> {
         ),
       ),
       backgroundColor: Colors.grey[300],
-      body: Column(
-        children: [
-          Material(
-            elevation: 4,
-            child: Container(
-              height: 50,
-              color: Colors.white,
-              child: Row(
-                children: [
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    width: 120,
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade100,
-                      border: Border.all(
-                        color: Colors.blue,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'At Bus Stop',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Material(
+              elevation: 4,
+              child: Container(
+                height: 50,
+                color: Colors.white,
+                child: Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.all(10),
+                      width: 120,
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade100,
+                        border: Border.all(
                           color: Colors.blue,
+                          width: 2,
                         ),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 10, 10, 10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Text(
-                        '  ' + widget.nearestBusStop + '  ',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.all(20),
-                  child: Material(
-                    elevation: 4,
-                    borderRadius: BorderRadius.circular(15),
-                    child: Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.location_pin,
-                            size: 40,
+                      child: Center(
+                        child: Text(
+                          'At Bus Stop',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
                             color: Colors.blue,
                           ),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: IgnorePointer(
-                              ignoring: isButtonPressed,
-                              child: Opacity(
-                                opacity: isButtonPressed ? 0.5 : 1.0,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.grey,
-                                      width: 2,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(0, 10, 10, 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '  ' + widget.nearestBusStop + '  ',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.all(20),
+                    child: Material(
+                      elevation: 4,
+                      borderRadius: BorderRadius.circular(15),
+                      child: Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.location_pin,
+                              size: 40,
+                              color: Colors.blue,
+                            ),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: IgnorePointer(
+                                ignoring: isButtonPressed,
+                                child: Opacity(
+                                  opacity: isButtonPressed ? 0.5 : 1.0,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.grey,
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: DropdownButton<String>(
-                                    value: selectedOption,
-                                    onChanged: isButtonPressed
-                                        ? null // Disable the dropdown button if button is pressed
-                                        : (String? newValue) {
-                                            setState(
-                                              () {
-                                                selectedOption = newValue;
-                                                isDestinationChosen =
-                                                    selectedOption !=
-                                                        'Choose Destination';
-                                              },
-                                            );
-                                          },
-                                    underline:
-                                        Container(), // Remove the default underline
-                                    items:
-                                        options.map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              value,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
+                                    child: DropdownButton<String>(
+                                      value: selectedOption,
+                                      onChanged: isButtonPressed
+                                          ? null // Disable the dropdown button if button is pressed
+                                          : (String? newValue) {
+                                              setState(
+                                                () {
+                                                  selectedOption = newValue;
+                                                  isDestinationChosen =
+                                                      selectedOption !=
+                                                          'Choose Destination';
+                                                },
+                                              );
+                                            },
+                                      underline:
+                                          Container(), // Remove the default underline
+                                      items:
+                                          options.map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                value,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        );
-                                      },
-                                    ).toList(),
+                                          );
+                                        },
+                                      ).toList(),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          if (!showMap && isDestinationChosen)
-            Container(
-              margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
-              child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    showMap = true;
-                    isButtonPressed = true;
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  textStyle:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                  minimumSize: Size(
-                    double.infinity,
-                    60,
-                  ),
-                ),
-                child: Text(
-                  'View Upcoming Bus',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+              ],
             ),
-          if (showMap) buildMapContainer(),
-        ],
+            if (!showMap && isDestinationChosen)
+              Container(
+                margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      showMap = true;
+                      isButtonPressed = true;
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    textStyle:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    minimumSize: Size(
+                      double.infinity,
+                      60,
+                    ),
+                  ),
+                  child: Text(
+                    'View Upcoming Bus',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            if (showMap) buildMapContainer(),
+          ],
+        ),
       ),
     );
   }

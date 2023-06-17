@@ -277,182 +277,185 @@ class _InBusState extends State<InBus> {
         ),
       ),
       backgroundColor: Colors.grey[300],
-      body: Column(
-        children: [
-          Material(
-            elevation: 4,
-            child: Container(
-              height: 50,
-              color: Colors.white,
-              child: Row(
-                children: [
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    width: 120,
-                    decoration: BoxDecoration(
-                      color: Colors.green.shade100,
-                      border: Border.all(
-                        color: Colors.green,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'In Bus',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Material(
+              elevation: 4,
+              child: Container(
+                height: 50,
+                color: Colors.white,
+                child: Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.all(10),
+                      width: 120,
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade100,
+                        border: Border.all(
                           color: Colors.green,
+                          width: 2,
                         ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: Text(
+                          'In Bus',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(0, 10, 10, 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '  ' + widget.selectedOption + '  ',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              height: 460,
+              margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Current Bus',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
                       ),
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.fromLTRB(0, 10, 10, 10),
+                    height: 375,
+                    margin: EdgeInsets.only(top: 20),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 2,
-                      ),
                       borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Text(
-                        '  ' + widget.selectedOption + '  ',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.4),
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
                         ),
-                      ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.all(20),
+                          child: Container(
+                            height: 200,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.grey,
+                                width: 2,
+                              ),
+                            ),
+                            child: GoogleMap(
+                              initialCameraPosition: CameraPosition(
+                                target:
+                                    busStopLocations[widget.selectedOption]!,
+                                zoom: 14,
+                              ),
+                              markers: Set<Marker>.of(_markers.values),
+                              polylines: _polylines.values
+                                  .map((polylineData) => polylineData.polyline)
+                                  .toSet(),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(left: 20),
+                          child: Column(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Estimated arrival time: ${remainingTime.toStringAsFixed(0)} seconds',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Number of passengers:',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Bus plate number:',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.blue,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Template(),
+                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    'Check-out',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-          Container(
-            height: 460,
-            margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
-            child: Column(
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Current Bus',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25,
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 375,
-                  margin: EdgeInsets.only(top: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.4),
-                        blurRadius: 4,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.all(20),
-                        child: Container(
-                          height: 200,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 2,
-                            ),
-                          ),
-                          child: GoogleMap(
-                            initialCameraPosition: CameraPosition(
-                              target: busStopLocations[widget.selectedOption]!,
-                              zoom: 14,
-                            ),
-                            markers: Set<Marker>.of(_markers.values),
-                            polylines: _polylines.values
-                                .map((polylineData) => polylineData.polyline)
-                                .toSet(),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 20),
-                        child: Column(
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Estimated arrival time: ${remainingTime.toStringAsFixed(0)} seconds',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Number of passengers:',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Bus plate number:',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Template(),
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  'Check-out',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
