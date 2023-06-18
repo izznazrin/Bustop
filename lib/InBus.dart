@@ -230,6 +230,31 @@ class _InBusState extends State<InBus> {
     return distance / busSpeed;
   }
 
+  //bus plate number
+  String busPlateNumber = '';
+  Future<String> getBusPlateNumber() async {
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('Driver')
+        .doc('driver1')
+        .get();
+
+    if (snapshot.exists) {
+      String busPlateNumber = snapshot['bus_id'] ??
+          ''; // Retrieve the bus plate number field from Firestore
+      return busPlateNumber;
+    } else {
+      return '';
+    }
+  }
+
+  Stream<int> getPassengerCountStream() {
+    return FirebaseFirestore.instance
+        .collection('Passenger')
+        .where('passenger_inbus', isEqualTo: true)
+        .snapshots()
+        .map((QuerySnapshot snapshot) => snapshot.size);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -265,22 +290,6 @@ class _InBusState extends State<InBus> {
         }
       },
     );
-  }
-
-  String busPlateNumber = ''; // Variable to hold the bus plate number
-  Future<String> getBusPlateNumber() async {
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection('Driver')
-        .doc('driver1')
-        .get();
-
-    if (snapshot.exists) {
-      String busPlateNumber = snapshot['bus_id'] ??
-          ''; // Retrieve the bus plate number field from Firestore
-      return busPlateNumber;
-    } else {
-      return '';
-    }
   }
 
   @override
@@ -417,9 +426,24 @@ class _InBusState extends State<InBus> {
                               ),
                               Align(
                                 alignment: Alignment.centerLeft,
-                                child: Text(
-                                  'Number of passengers:',
-                                  style: TextStyle(fontSize: 18),
+                                child: StreamBuilder<int>(
+                                  stream: getPassengerCountStream(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      final passengerCount = snapshot.data;
+                                      return Text(
+                                        'Number of passengers: $passengerCount',
+                                        style: TextStyle(fontSize: 18),
+                                      );
+                                    } else if (snapshot.hasError) {
+                                      return Text(
+                                        'Error retrieving passenger count',
+                                        style: TextStyle(fontSize: 18),
+                                      );
+                                    } else {
+                                      return CircularProgressIndicator(); // Display a loading indicator while waiting for data
+                                    }
+                                  },
                                 ),
                               ),
                               Align(
