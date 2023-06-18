@@ -94,7 +94,7 @@ class _LoginState extends State<Login> {
                       borderSide: BorderSide(color: Colors.blue, width: 3),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    hintText: 'Siswa Email',
+                    hintText: 'UTHM Email',
                     fillColor: Colors.white,
                     filled: true,
                   ),
@@ -162,13 +162,34 @@ class _LoginState extends State<Login> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                    'click here to contact us',
-                    style: TextStyle(
-                      color: Colors.blue[900],
-                      fontWeight: FontWeight.bold,
+                  GestureDetector(
+                    onTap: () {
+                      final message =
+                          'WhatsApp: +60169399123\nEmail: nazrin.izryzza@gmail.com';
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Contact Information'),
+                          content: Text(message),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'click here to contact us',
+                      style: TextStyle(
+                        color: Colors.blue[900],
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ],

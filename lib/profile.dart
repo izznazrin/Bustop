@@ -62,12 +62,13 @@ class _ProfileState extends State<Profile> {
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
+              color: Colors.white,
               border: Border.all(
                 color: Colors.black,
-                width: 1.0,
+                width: 2.0,
               ),
             ),
-            margin: EdgeInsets.all(10.0),
+            margin: EdgeInsets.all(15.0),
             child: Row(
               children: [
                 Flexible(
