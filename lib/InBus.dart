@@ -9,8 +9,11 @@ import 'dart:convert';
 
 class InBus extends StatefulWidget {
   final String selectedOption;
+  final String documentId;
 
-  const InBus({Key? key, required this.selectedOption}) : super(key: key);
+  const InBus(
+      {Key? key, required this.selectedOption, required this.documentId})
+      : super(key: key);
 
   @override
   State<InBus> createState() => _InBusState();
@@ -483,12 +486,18 @@ class _InBusState extends State<InBus> {
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                   ),
-                                  onPressed: () {
+                                  onPressed: () async {
+                                    // Update the passenger_inbus field to false
+                                    await FirebaseFirestore.instance
+                                        .collection('Passenger')
+                                        .doc(widget.documentId)
+                                        .update({'passenger_inbus': false});
+
+                                    // Navigate to the Template screen
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => Template(),
-                                      ),
+                                          builder: (context) => Template()),
                                     );
                                   },
                                   child: Text(

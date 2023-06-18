@@ -180,7 +180,7 @@ class _RidingState extends State<Riding> {
     setState(() {});
   }
 
-// Function to decode the polyline points
+  // Function to decode the polyline points
   List<LatLng> decodePolyline(String encoded) {
     List<LatLng> polylinePoints = [];
 
@@ -477,7 +477,8 @@ class _RidingState extends State<Riding> {
                                 FirebaseFirestore.instance
                                     .collection('Passenger');
 
-                            await passengerCollection.add({
+                            DocumentReference newDocumentRef =
+                                await passengerCollection.add({
                               'bus_id': busPlateNumber,
                               'passenger_date': passengerDate,
                               'passenger_destination': selectedOption,
@@ -489,8 +490,9 @@ class _RidingState extends State<Riding> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    InBus(selectedOption: selectedOption!),
+                                builder: (context) => InBus(
+                                    documentId: newDocumentRef.id,
+                                    selectedOption: selectedOption!),
                               ),
                             );
                           },
