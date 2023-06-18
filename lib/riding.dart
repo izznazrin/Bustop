@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Riding extends StatefulWidget {
   final String nearestBusStop;
@@ -268,8 +269,8 @@ class _RidingState extends State<Riding> {
         .get();
 
     if (snapshot.exists) {
-      String busPlateNumber = snapshot['bus_id'] ??
-          ''; // Retrieve the bus plate number field from Firestore
+      busPlateNumber = snapshot['bus_id'] ??
+          ''; // Assign the value directly to the outer variable
       return busPlateNumber;
     } else {
       return '';
@@ -282,6 +283,22 @@ class _RidingState extends State<Riding> {
         .where('passenger_inbus', isEqualTo: true)
         .snapshots()
         .map((QuerySnapshot snapshot) => snapshot.size);
+  }
+
+  late User? _user;
+  late String _studentName;
+  Future<void> _loadStudentName() async {
+    final studentDoc = await FirebaseFirestore.instance
+        .collection('Student')
+        .where('student_uid', isEqualTo: _user!.uid)
+        .limit(1)
+        .get();
+    if (studentDoc.docs.isNotEmpty) {
+      final studentData = studentDoc.docs.first.data();
+      setState(() {
+        _studentName = studentData['student_name'] ?? 'Unknown';
+      });
+    }
   }
 
   @override
@@ -319,6 +336,10 @@ class _RidingState extends State<Riding> {
         }
       },
     );
+    _user = FirebaseAuth.instance.currentUser;
+    if (_user != null) {
+      _loadStudentName();
+    }
   }
 
   Widget buildMapContainer() {
@@ -445,7 +466,26 @@ class _RidingState extends State<Riding> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
+                            // Get the current timestamp
+                            Timestamp passengerDate = Timestamp.now();
+
+                            String? studentName = _studentName;
+
+                            // Create a new document in the "Passenger" collection
+                            CollectionReference passengerCollection =
+                                FirebaseFirestore.instance
+                                    .collection('Passenger');
+
+                            await passengerCollection.add({
+                              'bus_id': busPlateNumber,
+                              'passenger_date': passengerDate,
+                              'passenger_destination': selectedOption,
+                              'passenger_inbus': true,
+                              'student_name': studentName,
+                            });
+
+                            // Navigate to the "InBus" screen and pass the document ID as a parameter
                             Navigator.push(
                               context,
                               MaterialPageRoute(
