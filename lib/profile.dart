@@ -13,7 +13,10 @@ class _ProfileState extends State<Profile> {
   late User? _user;
   late String _studentName;
   late String _studentMatricNumber;
+  late String _studentPhoneNumber;
   late bool _isLoading;
+
+  final TextEditingController _phoneNumberController = TextEditingController();
 
   @override
   void initState() {
@@ -37,17 +40,64 @@ class _ProfileState extends State<Profile> {
         .get();
     if (studentDoc.docs.isNotEmpty) {
       final studentData = studentDoc.docs.first.data();
-      final studentData2 = studentDoc.docs.first.data();
       setState(() {
         _studentName = studentData['student_name'] ?? 'Unknown';
-        _studentMatricNumber =
-            studentData2['student_matricnumber'] ?? 'Unknown';
+        _studentMatricNumber = studentData['student_matricnumber'] ?? 'Unknown';
+        _studentPhoneNumber = studentData['student_phonenumber'] ?? 'Unknown';
       });
     }
 
     setState(() {
       _isLoading = false;
     });
+  }
+
+  Future<void> _updatePhoneNumber(String phoneNumber) async {
+    final studentDoc = await FirebaseFirestore.instance
+        .collection('Student')
+        .where('student_uid', isEqualTo: _user!.uid)
+        .limit(1)
+        .get();
+    if (studentDoc.docs.isNotEmpty) {
+      final studentData = studentDoc.docs.first;
+      await studentData.reference.update({'student_phonenumber': phoneNumber});
+      setState(() {
+        _studentPhoneNumber = phoneNumber;
+      });
+    }
+  }
+
+  void _showEditPhoneNumberDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Edit Phone Number'),
+          content: TextField(
+            controller: _phoneNumberController,
+            decoration: InputDecoration(hintText: 'Enter new phone number'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                final newPhoneNumber = _phoneNumberController.text.trim();
+                if (newPhoneNumber.isNotEmpty) {
+                  _updatePhoneNumber(newPhoneNumber);
+                }
+                Navigator.of(context).pop();
+              },
+              child: Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -76,9 +126,28 @@ class _ProfileState extends State<Profile> {
                     padding: EdgeInsets.all(10.0),
                     child: _isLoading
                         ? CircularProgressIndicator()
-                        : Text(
-                            '$_studentName $_studentMatricNumber',
-                            style: TextStyle(fontSize: 18),
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '$_studentName $_studentMatricNumber',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Phone Number: $_studentPhoneNumber',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  SizedBox(width: 8),
+                                  IconButton(
+                                    icon: Icon(Icons.edit),
+                                    onPressed: _showEditPhoneNumberDialog,
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                   ),
                 ),
