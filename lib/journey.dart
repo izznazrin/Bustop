@@ -61,18 +61,15 @@ class JourneyModuleState extends State<JourneyModule> {
   int selectedBusStopIndex = 0;
 
   Future<void> _refresh() async {
-    // Perform any refresh actions here
-    determineNearestBusStop(); // Refresh the nearest bus stop
-    // You can add more code to refresh additional data if needed
+    determineNearestBusStop();
   }
 
   @override
   void initState() {
     super.initState();
-    determineNearestBusStop(); // Call the function to determine the nearest bus stop on widget initialization
+    determineNearestBusStop();
   }
 
-  //code untuk dapatkan user current location
   Future<Position> getCurrentLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied ||
@@ -80,7 +77,6 @@ class JourneyModuleState extends State<JourneyModule> {
       permission = await Geolocator.requestPermission();
       if (permission != LocationPermission.whileInUse &&
           permission != LocationPermission.always) {
-        // Handle location permission denied
         return Future.error('Location permission denied');
       }
     }
@@ -93,7 +89,6 @@ class JourneyModuleState extends State<JourneyModule> {
   }
 
   void determineNearestBusStop() async {
-    /// Retrieve the user's current location coordinates
     Position position = await getCurrentLocation();
     final userLatitude = position.latitude;
     final userLongitude = position.longitude;
@@ -101,7 +96,6 @@ class JourneyModuleState extends State<JourneyModule> {
     double minDistance = double.infinity;
     String nearestStopName = '';
 
-    // Calculate the distance between the user's location and each bus stop
     for (var busStop in busStops) {
       final distance = calculateDistance(
           userLatitude, userLongitude, busStop.latitude, busStop.longitude);

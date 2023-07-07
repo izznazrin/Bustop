@@ -256,7 +256,7 @@ class _RidingState extends State<Riding> {
   }
 
   double calculateRemainingTime(double distance) {
-    double busSpeed = 10.0; // Assuming constant speed of 10 m/s
+    double busSpeed = 10.0;
     return distance / busSpeed;
   }
 
@@ -267,7 +267,6 @@ class _RidingState extends State<Riding> {
         .collection('Driver')
         .doc('driver1')
         .get();
-
     if (snapshot.exists) {
       busPlateNumber = snapshot['bus_id'] ??
           ''; // Assign the value directly to the outer variable
